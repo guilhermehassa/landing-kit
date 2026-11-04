@@ -33,3 +33,7 @@ export function Hero() {
 
 - **`Button` executa uma ação** (enviar, escolher um plano). **`ButtonLink` navega** até uma âncora. Os dois têm o mesmo visual.
 - **Trecho com fundo índigo:** marque o elemento com `data-surface="primary"`. Isso troca o token de foco para o âmbar claro, que tem contraste sobre o índigo. No Storybook, escolha "Faixa índigo" no menu **Fundo** da barra de ferramentas.
+
+## Biblioteca e demonstração
+
+O grupo **Componentes** é a biblioteca: genérica, sem estado global e sem saber o que acontece com os dados. O grupo **Demonstração** reúne partes da landing do Hora Âmbar que usam a biblioteca: o formulário de inscrição em 3 etapas (estado no Zustand, validação com o Zod) e o painel que mostra os eventos enviados ao `dataLayer`. Elas têm stories para conferir os estados e passar no axe, mas não fazem parte da API pública.
