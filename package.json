@@ -1,8 +1,12 @@
 {
   "name": "landing-kit",
+  "description": "Biblioteca de componentes React para landing pages de conversão, documentada em Storybook.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -11,6 +15,7 @@
     "typecheck": "tsc -b",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "build:vercel": "npm run build && npm run build-storybook -- --output-dir dist/storybook",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:unit": "vitest run --project unit",
