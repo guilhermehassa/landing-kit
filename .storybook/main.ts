@@ -2,7 +2,11 @@ import type { StorybookConfig } from '@storybook/react-vite'
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(ts|tsx)'],
-  addons: ['@storybook/addon-docs', '@storybook/addon-a11y'],
+  addons: [
+    '@storybook/addon-docs',
+    '@storybook/addon-a11y',
+    '@storybook/addon-vitest'
+  ],
   framework: '@storybook/react-vite',
   typescript: {
     // O react-docgen lê o código com Babel. O react-docgen-typescript usa a API do
