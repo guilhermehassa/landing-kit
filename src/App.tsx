@@ -1,62 +1,48 @@
-import { Button, ButtonLink } from '@/index'
+import { useState } from 'react'
+import { Toast } from '@/index'
+import type { Plano } from '@/demo/planos'
+import { Beneficios } from '@/demo/sections/Beneficios'
+import { Cabecalho } from '@/demo/sections/Cabecalho'
+import { ChamadaFinal } from '@/demo/sections/ChamadaFinal'
+import { Depoimentos } from '@/demo/sections/Depoimentos'
+import { Hero } from '@/demo/sections/Hero'
+import { Inscricao } from '@/demo/sections/Inscricao'
+import { Perguntas } from '@/demo/sections/Perguntas'
+import { Planos } from '@/demo/sections/Planos'
+import { Programa } from '@/demo/sections/Programa'
+import { Rodape } from '@/demo/sections/Rodape'
+import { SobreADemo } from '@/demo/SobreADemo'
 
-// Vitrine provisória do Botão, só para conferência visual. A landing de verdade vem no bloco 4.
+// A landing do Hora Âmbar, montada com a API pública da biblioteca (@/index)
 export function App() {
+  // Bloco 5: o plano escolhido passa para a store do Zustand (escolherPlano), e este
+  // estado fica só com o aviso
+  const [planoEscolhido, setPlanoEscolhido] = useState<Plano | null>(null)
+  const [sobreAberto, setSobreAberto] = useState(false)
+
   return (
-    <main className="mx-auto flex max-w-content flex-col gap-12 px-6 py-section">
-      <header className="flex flex-col gap-2">
-        <h1 className="font-display text-4xl font-semibold leading-tight md:text-5xl">
-          landing-kit
-        </h1>
-        <p className="text-text-muted">Vitrine do Botão: variantes, tamanhos e estados.</p>
-      </header>
+    <>
+      <Cabecalho />
+      <main id="conteudo">
+        <Hero />
+        <Beneficios />
+        {/* Bloco 6: "Onde está a luz hoje?" (#luz-hoje) entra aqui */}
+        <Programa />
+        <Depoimentos />
+        <Planos onEscolher={setPlanoEscolhido} />
+        <Inscricao />
+        <Perguntas />
+        <ChamadaFinal />
+      </main>
+      <Rodape onAbrirSobre={() => setSobreAberto(true)} />
 
-      <section aria-labelledby="titulo-botoes" className="flex flex-col gap-4">
-        <h2 id="titulo-botoes" className="font-display text-3xl font-semibold leading-tight">
-          Botão (ação)
-        </h2>
-        <div className="flex flex-wrap items-center gap-4">
-          <Button>Escolher o Completo</Button>
-          <Button variant="secondary">Editar</Button>
-          <Button size="sm">Escolher o Essencial</Button>
-          <Button variant="secondary" size="sm">
-            Voltar
-          </Button>
-          <Button disabled>Desabilitado</Button>
-          <Button loading>Confirmar inscrição</Button>
-        </div>
-      </section>
-
-      <section aria-labelledby="titulo-links" className="flex flex-col gap-4">
-        <h2 id="titulo-links" className="font-display text-3xl font-semibold leading-tight">
-          ButtonLink (navegação)
-        </h2>
-        <div className="flex flex-wrap items-center gap-4">
-          <ButtonLink href="#inscricao">Quero me inscrever</ButtonLink>
-          <ButtonLink href="#planos" variant="secondary">
-            Ver os planos
-          </ButtonLink>
-          <ButtonLink href="#inscricao" size="sm">
-            Inscrever-se
-          </ButtonLink>
-        </div>
-      </section>
-
-      <section
-        aria-labelledby="titulo-faixa"
-        data-surface="primary"
-        className="flex flex-col gap-4 rounded-card bg-primary p-8 text-primary-foreground"
-      >
-        <h2 id="titulo-faixa" className="font-display text-3xl font-semibold leading-tight">
-          A luz boa volta todo dia. Comece pela próxima.
-        </h2>
-        <p>Variante accent sobre a faixa índigo, com o foco em âmbar claro.</p>
-        <div>
-          <ButtonLink href="#inscricao" variant="accent">
-            Quero me inscrever
-          </ButtonLink>
-        </div>
-      </section>
-    </main>
+      <SobreADemo open={sobreAberto} onClose={() => setSobreAberto(false)} />
+      {/* Montado desde o início, mesmo vazio: a região de status precisa existir antes da mensagem */}
+      <Toast
+        message={planoEscolhido && `Plano ${planoEscolhido.nome} escolhido.`}
+        detail="Falta só a inscrição."
+        onClose={() => setPlanoEscolhido(null)}
+      />
+    </>
   )
 }
