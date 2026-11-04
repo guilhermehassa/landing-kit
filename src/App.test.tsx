@@ -1,7 +1,16 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { useInscricao } from '@/demo/inscricao/store'
+import { limparEventosEnviados } from '@/demo/tracking'
 import { App } from './App'
+
+beforeEach(() => {
+  // A store e o registro de eventos são singletons do módulo: zera os dois a cada teste
+  useInscricao.setState(useInscricao.getInitialState(), true)
+  limparEventosEnviados()
+  window.dataLayer = []
+})
 
 describe('App (demonstração)', () => {
   it('tem um só h1 e um h2 por seção', () => {
@@ -53,5 +62,51 @@ describe('App (demonstração)', () => {
       'Plano Completo escolhido. Falta só a inscrição.',
     )
     expect(escolher).toHaveFocus()
+  })
+
+  it('escolher um plano manda o select_item, precedido da limpeza do ecommerce', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Escolher a Mentoria' }))
+
+    expect(window.dataLayer).toEqual([
+      { ecommerce: null },
+      {
+        event: 'select_item',
+        ecommerce: {
+          currency: 'BRL',
+          item_list_id: 'planos',
+          item_list_name: 'Planos',
+          items: [{ item_id: 'mentoria', item_name: 'Hora Âmbar Mentoria', price: 697, index: 2 }],
+        },
+      },
+    ])
+  })
+
+  it('o plano escolhido no card aparece no formulário e já vem marcado na etapa 3', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Escolher o Completo' }))
+
+    expect(
+      screen.getByText('Plano escolhido: Completo. Você pode trocar na etapa 3.'),
+    ).toBeInTheDocument()
+
+    await user.type(screen.getByRole('textbox', { name: 'Nome' }), 'Maria')
+    await user.type(screen.getByRole('textbox', { name: 'E-mail' }), 'maria@exemplo.com')
+    await user.click(screen.getByRole('button', { name: 'Continuar' }))
+    await user.selectOptions(
+      screen.getByRole('combobox', { name: 'Sua experiência com fotografia' }),
+      'iniciante',
+    )
+    await user.selectOptions(
+      screen.getByRole('combobox', { name: 'O que você mais quer fotografar?' }),
+      'viagens',
+    )
+    await user.click(screen.getByRole('button', { name: 'Continuar' }))
+
+    expect(screen.getByRole('combobox', { name: 'Plano' })).toHaveValue('completo')
   })
 })

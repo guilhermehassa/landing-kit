@@ -5,7 +5,7 @@ interface SecaoProps {
   titulo: string
   subtitulo?: string
   /** Texto menor e em itálico, abaixo do subtítulo (legenda ou aviso). */
-  nota?: string
+  nota?: ReactNode
   fundo?: 'surface' | 'surface-muted'
   children?: ReactNode
 }

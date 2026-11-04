@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Toast } from '@/index'
-import type { Plano } from '@/demo/planos'
+import { useInscricao } from '@/demo/inscricao/store'
+import { planos, type Plano } from '@/demo/planos'
 import { Beneficios } from '@/demo/sections/Beneficios'
 import { Cabecalho } from '@/demo/sections/Cabecalho'
 import { ChamadaFinal } from '@/demo/sections/ChamadaFinal'
@@ -12,13 +13,38 @@ import { Planos } from '@/demo/sections/Planos'
 import { Programa } from '@/demo/sections/Programa'
 import { Rodape } from '@/demo/sections/Rodape'
 import { SobreADemo } from '@/demo/SobreADemo'
+import { track } from '@/demo/tracking'
 
 // A landing do Hora Âmbar, montada com a API pública da biblioteca (@/index)
 export function App() {
-  // Bloco 5: o plano escolhido passa para a store do Zustand (escolherPlano), e este
-  // estado fica só com o aviso
-  const [planoEscolhido, setPlanoEscolhido] = useState<Plano | null>(null)
+  // Só a ação: ela nunca muda, então o App não re-renderiza quando o formulário muda
+  const escolherPlano = useInscricao((s) => s.escolherPlano)
+  // O aviso é da página e some sozinho; o plano escolhido fica na store
+  const [aviso, setAviso] = useState<string | null>(null)
   const [sobreAberto, setSobreAberto] = useState(false)
+
+  // O card só avisa que foi escolhido (onEscolher). Quem liga a escolha à store, ao
+  // evento e ao aviso é a página: a biblioteca continua sem saber do Zustand
+  function aoEscolherPlano(plano: Plano) {
+    escolherPlano(plano.id)
+    track({
+      event: 'select_item',
+      ecommerce: {
+        currency: 'BRL',
+        item_list_id: 'planos',
+        item_list_name: 'Planos',
+        items: [
+          {
+            item_id: plano.id,
+            item_name: `Hora Âmbar ${plano.nome}`,
+            price: plano.preco,
+            index: planos.indexOf(plano),
+          },
+        ],
+      },
+    })
+    setAviso(`Plano ${plano.nome} escolhido.`)
+  }
 
   return (
     <>
@@ -29,8 +55,8 @@ export function App() {
         {/* Bloco 6: "Onde está a luz hoje?" (#luz-hoje) entra aqui */}
         <Programa />
         <Depoimentos />
-        <Planos onEscolher={setPlanoEscolhido} />
-        <Inscricao />
+        <Planos onEscolher={aoEscolherPlano} />
+        <Inscricao onAbrirSobre={() => setSobreAberto(true)} />
         <Perguntas />
         <ChamadaFinal />
       </main>
@@ -38,11 +64,7 @@ export function App() {
 
       <SobreADemo open={sobreAberto} onClose={() => setSobreAberto(false)} />
       {/* Montado desde o início, mesmo vazio: a região de status precisa existir antes da mensagem */}
-      <Toast
-        message={planoEscolhido && `Plano ${planoEscolhido.nome} escolhido.`}
-        detail="Falta só a inscrição."
-        onClose={() => setPlanoEscolhido(null)}
-      />
+      <Toast message={aviso} detail="Falta só a inscrição." onClose={() => setAviso(null)} />
     </>
   )
 }
