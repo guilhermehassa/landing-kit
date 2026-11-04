@@ -16,6 +16,9 @@ async function iniciarMsw() {
   const worker = setupWorker()
   await worker.start({
     quiet: true,
+    // O padrão é /mockServiceWorker.js, na raiz do site. Na Vercel, o Storybook fica em
+    // /storybook/: com a base do Vite ('./' no Storybook), o worker vem da pasta dele
+    serviceWorker: { url: `${import.meta.env.BASE_URL}mockServiceWorker.js` },
     onUnhandledFrame({ frame, defaults }) {
       // Os arquivos do próprio Storybook (mesma origem) passam sem handler
       if (!(frame instanceof HttpNetworkFrame)) return
