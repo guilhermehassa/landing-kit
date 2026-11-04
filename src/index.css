@@ -1,1 +1,15 @@
 @import "tailwindcss";
+@import "./styles/tokens.css";
+
+@layer base {
+  body {
+    background-color: var(--surface);
+    color: var(--text);
+  }
+
+  /* Foco global: todo link e controle ganha o anel. Nunca usar outline: none sem outro indicador. */
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+}

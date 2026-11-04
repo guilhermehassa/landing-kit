@@ -1,0 +1,108 @@
+/*
+ * Tokens de design em três camadas: primitivos → semânticos → @theme inline.
+ *
+ * Por que três, e não duas: com `@theme inline`, a classe usa direto a variável
+ * apontada (`bg-primary` vira `background-color: var(--primary)`). Se o @theme
+ * apontasse para o primitivo, `bg-primary` ficaria preso a `--indigo-700`, e não
+ * daria para trocar o papel num trecho da página nem num tema escuro. Com a camada
+ * semântica no meio, basta redefinir `--primary` (ou `--focus`) num seletor.
+ */
+
+/* 1. Primitivos: o valor bruto, sem significado. Nenhum componente usa direto. */
+:root {
+  --white: #ffffff;
+  --sand-50: #fbf8f3;
+  --sand-100: #f4eee4;
+  --sand-200: #e7dfd2;
+  --sand-500: #8a8070;
+  --gray-600: #4c4f66;
+  --indigo-100: #dde1f7;
+  --indigo-700: #33388c;
+  --indigo-800: #292d72;
+  --indigo-950: #16183a;
+  --amber-300: #f8c76a;
+  --amber-400: #f2aa3a;
+  --amber-500: #e0901f;
+  --amber-700: #b8650a;
+  --green-50: #e8f5ec;
+  --green-700: #1e7a46;
+  --red-50: #fcebea;
+  --red-700: #b3261e;
+}
+
+/* 2. Semânticos: o papel na interface. Podem mudar por contexto. */
+:root {
+  --primary: var(--indigo-700);
+  --primary-hover: var(--indigo-800);
+  --primary-foreground: var(--white);
+  --primary-subtle: var(--indigo-100);
+  --primary-subtle-foreground: var(--indigo-800);
+  --accent: var(--amber-400);
+  --accent-hover: var(--amber-500);
+  --accent-foreground: var(--indigo-950);
+  --surface: var(--sand-50);
+  --surface-muted: var(--sand-100);
+  --surface-raised: var(--white);
+  --text: var(--indigo-950);
+  --text-muted: var(--gray-600);
+  --border: var(--sand-200);
+  --border-control: var(--sand-500);
+  --success: var(--green-700);
+  --success-surface: var(--green-50);
+  --danger: var(--red-700);
+  --danger-surface: var(--red-50);
+  --focus: var(--amber-700);
+}
+
+/*
+ * Contexto: trecho com fundo primary (faixa da chamada final). Só o foco muda,
+ * porque o âmbar escuro sobre o índigo dá 2,35:1 e reprova. É o mesmo mecanismo
+ * de um tema escuro, em miniatura.
+ */
+[data-surface="primary"] {
+  --focus: var(--amber-300);
+}
+
+/* 3. Ponte para o Tailwind: cada --color-* vira bg-*, text-*, border-*, outline-*… */
+@theme inline {
+  --color-*: initial; /* desliga a paleta padrão: bg-violet-600 deixa de existir */
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-subtle: var(--primary-subtle);
+  --color-primary-subtle-foreground: var(--primary-subtle-foreground);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-raised: var(--surface-raised);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-border-control: var(--border-control);
+  --color-success: var(--success);
+  --color-success-surface: var(--success-surface);
+  --color-danger: var(--danger);
+  --color-danger-surface: var(--danger-surface);
+  --color-focus: var(--focus);
+}
+
+/* Valores brutos que não apontam para outra variável: @theme sem inline. */
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
+  --radius-control: 0.5rem;
+  --radius-card: 1rem;
+  --radius-pill: 9999px;
+  --spacing-section: 4rem;
+  --container-content: 72rem;
+  --container-text: 40rem;
+  --shadow-card: 0 1px 2px rgb(22 24 58 / 0.06), 0 8px 24px rgb(22 24 58 / 0.08);
+}
+
+@media (width >= 48rem) {
+  :root {
+    --spacing-section: 6rem;
+  }
+}
