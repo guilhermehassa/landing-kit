@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# O CI só lê o repositório: não publica, não comenta, não faz push
+permissions:
+  contents: read
+
+# Um push novo no mesmo branch ou PR cancela a execução anterior, que já ficou velha
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verificar:
+    name: Lint, tipos, testes e build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v7
+        with:
+          # Nenhum passo usa git depois do checkout: o token não fica guardado no disco
+          persist-credentials: false
+
+      - name: Instalar o Node da .nvmrc
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # Nenhuma dependência precisa de script de instalação (o binário do esbuild, por
+      # exemplo, vem de um pacote opcional por plataforma). Sem eles, instalar não executa
+      # código de terceiros
+      - name: Instalar as dependências
+        run: npm ci --ignore-scripts
+
+      # Só o Chromium sem interface (headless shell), que é o que os testes das stories usam.
+      # Sem cache: a doc do Playwright não recomenda, porque restaurar leva quase o mesmo tempo
+      # que baixar, e as dependências do sistema não entram no cache
+      - name: Instalar o Chromium do Playwright
+        run: npx playwright install --with-deps --only-shell chromium
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tipos
+        run: npm run typecheck
+
+      # O reporter github-actions marca no PR a linha do teste que falhou. O Vitest já o liga
+      # sozinho no GitHub Actions; aqui ele fica escrito, junto do padrão
+      - name: Testes (componentes, stories e acessibilidade)
+        run: npm test -- --reporter=default --reporter=github-actions
+
+      - name: Build da demo
+        run: npm run build
+
+      - name: Build do Storybook
+        run: npm run build-storybook
