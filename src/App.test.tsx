@@ -1,9 +1,14 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { useInscricao } from '@/demo/inscricao/store'
 import { limparEventosEnviados } from '@/demo/tracking'
+import { renderComQuery } from '@/test/renderComQuery'
 import { App } from './App'
+
+// O App tem a seção da previsão, que usa o TanStack Query. A Open-Meteo responde pela
+// MSW (src/test/server.ts), com a resposta gravada
+const renderApp = () => renderComQuery(<App />)
 
 beforeEach(() => {
   // A store e o registro de eventos são singletons do módulo: zera os dois a cada teste
@@ -14,11 +19,12 @@ beforeEach(() => {
 
 describe('App (demonstração)', () => {
   it('tem um só h1 e um h2 por seção', () => {
-    render(<App />)
+    renderApp()
 
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
     expect(screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)).toEqual([
       'O que muda nas suas fotos',
+      'Onde está a luz hoje?',
       '4 semanas, 4 módulos',
       'Quem já fez o curso',
       'Escolha seu plano',
@@ -29,7 +35,7 @@ describe('App (demonstração)', () => {
   })
 
   it('os títulos do Programa separam a semana do módulo no nome acessível', () => {
-    render(<App />)
+    renderApp()
 
     // Na tela, "Semana 1" e "Ler a luz" ficam em linhas diferentes, sem nada entre eles
     expect(
@@ -42,7 +48,7 @@ describe('App (demonstração)', () => {
 
   it('o primeiro Tab chega ao "Pular para o conteúdo", que leva ao <main>', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    renderApp()
 
     await user.tab()
 
@@ -53,20 +59,20 @@ describe('App (demonstração)', () => {
 
   it('escolher um plano mostra o aviso sem tirar o foco do botão', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    renderApp()
 
     const escolher = screen.getByRole('button', { name: 'Escolher o Completo' })
     await user.click(escolher)
 
-    expect(screen.getByRole('status')).toHaveTextContent(
-      'Plano Completo escolhido. Falta só a inscrição.',
-    )
+    // A página tem duas regiões de status: a do aviso e a da previsão da luz
+    const aviso = screen.getByText('Plano Completo escolhido.').closest('[role="status"]')
+    expect(aviso).toHaveTextContent('Plano Completo escolhido. Falta só a inscrição.')
     expect(escolher).toHaveFocus()
   })
 
   it('escolher um plano manda o select_item, precedido da limpeza do ecommerce', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    renderApp()
 
     await user.click(screen.getByRole('button', { name: 'Escolher a Mentoria' }))
 
@@ -86,7 +92,7 @@ describe('App (demonstração)', () => {
 
   it('o plano escolhido no card aparece no formulário e já vem marcado na etapa 3', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    renderApp()
 
     await user.click(screen.getByRole('button', { name: 'Escolher o Completo' }))
 

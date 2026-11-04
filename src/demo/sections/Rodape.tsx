@@ -25,6 +25,17 @@ export function Rodape({ onAbrirSobre }: RodapeProps) {
           </a>
         </p>
         <p>
+          Previsão do tempo:{' '}
+          <a href="https://open-meteo.com/" className={link}>
+            Open-Meteo.com
+          </a>{' '}
+          (
+          <a href="https://creativecommons.org/licenses/by/4.0/deed.pt-br" className={link}>
+            CC BY 4.0
+          </a>
+          )
+        </p>
+        <p>
           {/* Botão com cara de link: abre o Modal, e não navega (link × botão, §3) */}
           <button type="button" onClick={onAbrirSobre} className={link}>
             Sobre esta demonstração

@@ -8,6 +8,7 @@ import { ChamadaFinal } from '@/demo/sections/ChamadaFinal'
 import { Depoimentos } from '@/demo/sections/Depoimentos'
 import { Hero } from '@/demo/sections/Hero'
 import { Inscricao } from '@/demo/sections/Inscricao'
+import { LuzHoje } from '@/demo/sections/LuzHoje'
 import { Perguntas } from '@/demo/sections/Perguntas'
 import { Planos } from '@/demo/sections/Planos'
 import { Programa } from '@/demo/sections/Programa'
@@ -52,7 +53,7 @@ export function App() {
       <main id="conteudo">
         <Hero />
         <Beneficios />
-        {/* Bloco 6: "Onde está a luz hoje?" (#luz-hoje) entra aqui */}
+        <LuzHoje />
         <Programa />
         <Depoimentos />
         <Planos onEscolher={aoEscolherPlano} />
