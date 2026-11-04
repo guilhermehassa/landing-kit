@@ -13,7 +13,7 @@ A biblioteca de componentes é o código. Um design system é o código mais as 
 - **Tokens.** Cores, tipografia, espaçamento e raios têm nome e papel. Os componentes usam só os tokens semânticos (`bg-primary`, `text-text-muted`), nunca uma cor solta. Veja a página [Tokens](?path=/docs/tokens--docs).
 - **Componentes.** Cada um tem as variantes de que a página precisa, e nada além disso.
 - **Documentação.** Cada componente tem stories dos estados difíceis (carregando, desabilitado, texto longo) e diz quando usar cada variante.
-- **Acessibilidade verificada.** O addon de acessibilidade roda o axe em cada story, e o resultado aparece no painel Acessibilidade. Quando os testes de componente entrarem no projeto, uma violação vai reprovar o CI. No código, o lint barra os erros comuns de JSX com as regras do jsx-a11y.
+- **Acessibilidade verificada.** O addon de acessibilidade roda o axe em cada story, e o resultado aparece no painel Acessibilidade. Cada story também roda como teste num Chromium sem interface, e uma violação do axe reprova o `npm test`. No código, o lint barra os erros comuns de JSX com as regras do jsx-a11y.
 
 ## Como usar
 

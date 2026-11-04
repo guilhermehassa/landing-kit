@@ -37,8 +37,8 @@ const preview: Preview = {
   },
   decorators: [withSurface],
   parameters: {
-    // Hoje o resultado do axe só aparece no painel. Com o addon de Vitest (bloco de
-    // testes), este 'error' faz uma violação de acessibilidade reprovar o teste
+    // Com o addon de Vitest, cada story roda como teste no Chromium (npm test), e este
+    // 'error' faz uma violação do axe reprovar o teste, e não só aparecer no painel
     a11y: {
       test: 'error',
     },
