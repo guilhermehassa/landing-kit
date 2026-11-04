@@ -23,7 +23,7 @@ export function App() {
             Voltar
           </Button>
           <Button disabled>Desabilitado</Button>
-          <Button loading>Enviar inscrição</Button>
+          <Button loading>Confirmar inscrição</Button>
         </div>
       </section>
 

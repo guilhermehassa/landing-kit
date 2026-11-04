@@ -12,8 +12,8 @@ export type ButtonLinkProps = ComponentPropsWithRef<'a'> &
  * Não tem estado desabilitado nem de carregamento: link navega, não executa ação.
  */
 export function ButtonLink({
-  variant,
-  size,
+  variant = 'primary',
+  size = 'md',
   className,
   href,
   children,

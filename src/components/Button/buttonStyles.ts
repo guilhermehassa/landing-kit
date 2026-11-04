@@ -2,14 +2,18 @@ export type ButtonVariant = 'primary' | 'secondary' | 'accent'
 export type ButtonSize = 'sm' | 'md'
 
 export interface ButtonStyleProps {
-  /** `accent` é só para fundo `primary` (faixa com `data-surface="primary"`). */
+  /**
+   * `primary`: a ação principal da seção. `secondary`: a alternativa ao lado dela.
+   * `accent`: só sobre fundo `primary` (faixa com `data-surface="primary"`).
+   */
   variant?: ButtonVariant
+  /** `md` na maior parte da página; `sm` em espaço curto, como o cabeçalho. */
   size?: ButtonSize
 }
 
 const base = [
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap',
-  'rounded-control font-sans font-semibold',
+  'inline-flex items-center justify-center gap-2 text-center',
+  'rounded-control font-sans font-semibold leading-tight',
   'motion-safe:transition-colors',
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
   // Desabilitado é isento de contraste na WCAG; a opacidade só sinaliza o estado
@@ -25,10 +29,11 @@ const variants: Record<ButtonVariant, string> = {
   accent: 'bg-accent text-accent-foreground hover:bg-accent-hover',
 }
 
-// md tem 44 px de altura: alvo de toque confortável no celular
+// Altura mínima, e não fixa: texto longo quebra a linha em vez de vazar do botão.
+// md tem no mínimo 44 px, alvo de toque confortável no celular
 const sizes: Record<ButtonSize, string> = {
-  sm: 'h-9 px-4 text-sm',
-  md: 'h-11 px-6 text-base',
+  sm: 'min-h-9 px-4 py-2 text-sm',
+  md: 'min-h-11 px-6 py-2 text-base',
 }
 
 /**

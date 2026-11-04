@@ -10,8 +10,8 @@ export type ButtonProps = ComponentPropsWithRef<'button'> &
 
 /** Botão para ações (enviar, escolher plano). Para navegar até uma âncora, use `ButtonLink`. */
 export function Button({
-  variant,
-  size,
+  variant = 'primary',
+  size = 'md',
   loading = false,
   loadingText = 'Enviando…',
   // O padrão do HTML é "submit": dentro de um form, qualquer botão enviaria o formulário
