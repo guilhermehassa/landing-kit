@@ -1,0 +1,35 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Introdução" />
+
+# landing-kit
+
+Uma biblioteca de componentes React para landing pages de conversão, documentada em Storybook. Eu a construí para estudar e para mostrar como organizo componentes, do token à documentação. A demonstração é a landing page de um curso fictício, o **Hora Âmbar**.
+
+## O que faz de uma biblioteca um design system
+
+A biblioteca de componentes é o código. Um design system é o código mais as regras que mantêm o resultado consistente. O landing-kit é um design system pequeno, feito só para landing pages, e estas são as partes dele:
+
+- **Tokens.** Cores, tipografia, espaçamento e raios têm nome e papel. Os componentes usam só os tokens semânticos (`bg-primary`, `text-text-muted`), nunca uma cor solta. Veja a página [Tokens](?path=/docs/tokens--docs).
+- **Componentes.** Cada um tem as variantes de que a página precisa, e nada além disso.
+- **Documentação.** Cada componente tem stories dos estados difíceis (carregando, desabilitado, texto longo) e diz quando usar cada variante.
+- **Acessibilidade verificada.** O addon de acessibilidade roda o axe em cada story, e o resultado aparece no painel Acessibilidade. Quando os testes de componente entrarem no projeto, uma violação vai reprovar o CI. No código, o lint barra os erros comuns de JSX com as regras do jsx-a11y.
+
+## Como usar
+
+O ponto de entrada é o `src/index.ts`. A aplicação carrega as fontes e o CSS dos tokens uma vez e importa os componentes de lá:
+
+```tsx
+import '@fontsource-variable/inter'
+import '@fontsource-variable/fraunces'
+import '@/index.css' // Tailwind e tokens
+
+import { ButtonLink } from '@/index'
+
+export function Hero() {
+  return <ButtonLink href="#inscricao">Quero me inscrever</ButtonLink>
+}
+```
+
+- **`Button` executa uma ação** (enviar, escolher um plano). **`ButtonLink` navega** até uma âncora. Os dois têm o mesmo visual.
+- **Trecho com fundo índigo:** marque o elemento com `data-surface="primary"`. Isso troca o token de foco para o âmbar claro, que tem contraste sobre o índigo. No Storybook, escolha "Faixa índigo" no menu **Fundo** da barra de ferramentas.

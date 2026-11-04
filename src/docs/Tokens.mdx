@@ -1,0 +1,174 @@
+import { ColorItem, ColorPalette, Meta, Unstyled } from '@storybook/addon-docs/blocks'
+
+<Meta title="Tokens" />
+
+# Tokens
+
+Os tokens ficam em `src/styles/tokens.css`, em três camadas:
+
+1. **Primitivos:** o valor bruto (`--indigo-700: #33388c`). Nenhum componente usa direto.
+2. **Semânticos:** o papel na interface (`--primary: var(--indigo-700)`). Podem mudar num trecho da página, como o foco na faixa índigo.
+3. **Ponte para o Tailwind** (`@theme inline`): cada semântico vira classe (`bg-primary`, `text-text-muted`). A paleta padrão do Tailwind está desligada, então `bg-violet-600` não gera CSS: a classe fica no HTML sem efeito nenhum.
+
+## Cores
+
+Cada linha é um papel semântico, com o primitivo para onde aponta e o contraste calculado pela fórmula da WCAG 2.x. Texto pede 4,5:1. Borda de campo e indicador de foco pedem 3:1.
+
+<ColorPalette>
+  <ColorItem
+    title="primary"
+    subtitle="Botão principal e links. Texto branco sobre primary: 10,07:1 (12,26:1 no hover). Como link sobre surface: 9,51:1."
+    colors={{
+      'primary · indigo-700': 'var(--primary)',
+      'primary-hover · indigo-800': 'var(--primary-hover)',
+      'primary-foreground · white': 'var(--primary-foreground)',
+    }}
+  />
+  <ColorItem
+    title="primary-subtle"
+    subtitle="Fundo do avatar de iniciais. Texto sobre ele: 9,45:1."
+    colors={{
+      'primary-subtle · indigo-100': 'var(--primary-subtle)',
+      'primary-subtle-foreground · indigo-800': 'var(--primary-subtle-foreground)',
+    }}
+  />
+  <ColorItem
+    title="accent"
+    subtitle="Selo Recomendado e botão da faixa índigo, nunca sobre fundo claro. Texto sobre accent: 8,64:1 (6,67:1 no hover). Botão sobre primary: 5,08:1."
+    colors={{
+      'accent · amber-400': 'var(--accent)',
+      'accent-hover · amber-500': 'var(--accent-hover)',
+      'accent-foreground · indigo-950': 'var(--accent-foreground)',
+    }}
+  />
+  <ColorItem
+    title="surface"
+    subtitle="Fundos: página, seções alternadas e cards. Texto sobre eles: 16,17:1, 14,84:1 e 17,13:1."
+    colors={{
+      'surface · sand-50': 'var(--surface)',
+      'surface-muted · sand-100': 'var(--surface-muted)',
+      'surface-raised · white': 'var(--surface-raised)',
+    }}
+  />
+  <ColorItem
+    title="text"
+    subtitle="Texto principal: 16,17:1 sobre surface. Texto secundário: 7,57:1, nunca menor que 14 px."
+    colors={{
+      'text · indigo-950': 'var(--text)',
+      'text-muted · gray-600': 'var(--text-muted)',
+    }}
+  />
+  <ColorItem
+    title="border"
+    subtitle="border é decorativa (1,32:1 sobre branco) e nunca vai em campo. border-control, de campo e de botão secundário: 3,89:1 sobre surface-raised."
+    colors={{
+      'border · sand-200': 'var(--border)',
+      'border-control · sand-500': 'var(--border-control)',
+    }}
+  />
+  <ColorItem
+    title="success e danger"
+    subtitle="Mensagens. Sobre surface-raised: success 5,35:1, danger 6,54:1. Sobre o próprio fundo: 4,76:1 e 5,67:1."
+    colors={{
+      'success · green-700': 'var(--success)',
+      'success-surface · green-50': 'var(--success-surface)',
+      'danger · red-700': 'var(--danger)',
+      'danger-surface · red-50': 'var(--danger-surface)',
+    }}
+  />
+  <ColorItem
+    title="focus"
+    subtitle="Anel de foco: 4,04:1 sobre surface. Na faixa índigo (data-surface=primary), o mesmo token aponta para amber-300: 6,41:1 sobre primary."
+    colors={{
+      'focus · amber-700': 'var(--focus)',
+      'focus na faixa · amber-300': 'var(--amber-300)',
+    }}
+  />
+</ColorPalette>
+
+## Tipografia
+
+Duas famílias variáveis, servidas pelo Fontsource, sem chamar serviço externo. A escala é a padrão do Tailwind.
+
+**Fraunces** (`font-display`): `h1`, `h2`, o nome do curso e o preço. **Inter** (`font-sans`): todo o resto.
+
+<Unstyled>
+  <div className="flex flex-col gap-6 text-text">
+    <div className="flex flex-col gap-1">
+      <span className="text-sm text-text-muted">font-display · text-5xl (48 px) · h1 a partir de 48rem</span>
+      <span className="font-display text-5xl font-semibold leading-tight">Fotos com luz bonita</span>
+    </div>
+    <div className="flex flex-col gap-1">
+      <span className="text-sm text-text-muted">font-display · text-4xl (36 px) · h1 no celular, h2 a partir de 48rem, preço</span>
+      <span className="font-display text-4xl font-semibold leading-tight">Escolha seu plano</span>
+    </div>
+    <div className="flex flex-col gap-1">
+      <span className="text-sm text-text-muted">font-display · text-3xl (30 px) · h2 no celular</span>
+      <span className="font-display text-3xl font-semibold leading-tight">Perguntas frequentes</span>
+    </div>
+    <div className="flex flex-col gap-1">
+      <span className="text-sm text-text-muted">font-sans · text-xl (20 px) · h3</span>
+      <span className="font-sans text-xl font-semibold">Luz bonita dentro de casa</span>
+    </div>
+    <div className="flex flex-col gap-1">
+      <span className="text-sm text-text-muted">font-sans · text-base (16 px) · corpo e campos</span>
+      <span className="font-sans text-base leading-relaxed">Em 4 semanas, você aprende a ler a luz natural e a escolher o melhor horário.</span>
+    </div>
+    <div className="flex flex-col gap-1">
+      <span className="text-sm text-text-muted">font-sans · text-sm (14 px) · texto secundário, o menor tamanho</span>
+      <span className="font-sans text-sm text-text-muted">À vista ou em até 12 vezes no cartão.</span>
+    </div>
+  </div>
+</Unstyled>
+
+- `h1`: `font-display text-4xl md:text-5xl font-semibold leading-tight`
+- `h2`: `font-display text-3xl md:text-4xl font-semibold leading-tight`
+- `h3`: `font-sans text-xl font-semibold`
+- Corpo: `text-base leading-relaxed` (16 px)
+- Texto secundário: `text-sm` (14 px). Nada menor do que isso.
+- Campos de formulário com 16 px: abaixo disso, o navegador do iPhone dá zoom ao focar.
+
+## Espaçamento
+
+Base de 4 px (`--spacing: 0.25rem`). Estes são os passos usados; fora deles, só com motivo.
+
+<Unstyled>
+  <div className="flex flex-col gap-2 text-text">
+    {[1, 2, 3, 4, 6, 8, 12, 16, 24].map((step) => (
+      <div key={step} className="flex items-center gap-4 text-sm">
+        <code className="w-12">{step}</code>
+        <div className="h-4 bg-primary" style={{ width: `calc(var(--spacing) * ${step})` }} />
+        <span className="text-text-muted">{step * 4} px</span>
+      </div>
+    ))}
+  </div>
+</Unstyled>
+
+Semânticos:
+
+- `py-section`: respiro vertical de cada seção. 4rem, e 6rem a partir de 48rem de largura.
+- `max-w-content`: largura máxima do conteúdo, 72rem.
+- `max-w-text`: largura máxima de parágrafo, 40rem.
+
+## Raios e sombra
+
+<Unstyled>
+  <div className="flex flex-wrap gap-8 text-sm text-text">
+    <figure className="flex flex-col items-start gap-2">
+      <div className="size-24 rounded-control border border-border-control bg-surface-raised" />
+      <figcaption><code>rounded-control</code> (0,5rem): botão e campo</figcaption>
+    </figure>
+    <figure className="flex flex-col items-start gap-2">
+      <div className="size-24 rounded-card border border-border bg-surface-raised" />
+      <figcaption><code>rounded-card</code> (1rem): cards e painéis</figcaption>
+    </figure>
+    <figure className="flex flex-col items-start gap-2">
+      <div className="size-24 rounded-pill bg-primary-subtle" />
+      <figcaption><code>rounded-pill</code>: selo e avatar</figcaption>
+    </figure>
+    <figure className="flex flex-col items-start gap-2">
+      <div className="size-24 rounded-card bg-surface-raised shadow-card" />
+      <figcaption><code>shadow-card</code>: só o card de preço em destaque</figcaption>
+    </figure>
+  </div>
+</Unstyled>
