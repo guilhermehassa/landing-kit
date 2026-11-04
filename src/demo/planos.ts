@@ -1,6 +1,8 @@
-export type PlanoId = 'essencial' | 'completo' | 'mentoria'
+import type { PlanoId } from './inscricao/schemas'
 
 export interface Plano {
+  // O tipo do id vem do schema do formulário: um plano novo aqui, sem estar no
+  // schema, é erro de compilação
   id: PlanoId
   nome: string
   descricao: string
@@ -12,7 +14,7 @@ export interface Plano {
 
 export const condicaoDePagamento = 'À vista ou em até 12 vezes no cartão.'
 
-// Fica fora da seção porque o formulário do bloco 5 também usa (select do plano e eventos)
+// Fica fora da seção porque o formulário também usa (select do plano e eventos)
 export const planos: Plano[] = [
   {
     id: 'essencial',
@@ -56,3 +58,20 @@ export const planos: Plano[] = [
     textoDoBotao: 'Escolher a Mentoria',
   },
 ]
+
+export function planoPorId(id: PlanoId): Plano {
+  const plano = planos.find((item) => item.id === id)
+  if (!plano) throw new Error(`Plano desconhecido: ${id}`)
+  return plano
+}
+
+const brl = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+  maximumFractionDigits: 0,
+})
+
+/** "R$ 197", com o espaço não separável do Intl. */
+export function formatarPreco(preco: number) {
+  return brl.format(preco)
+}
