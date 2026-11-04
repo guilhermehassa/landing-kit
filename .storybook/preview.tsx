@@ -1,7 +1,34 @@
 import type { Decorator, Preview } from '@storybook/react-vite'
+import { setupWorker } from 'msw/browser'
+import { HttpNetworkFrame } from 'msw/experimental'
+import { mswLoader } from 'msw-storybook-addon/csf3'
 import '@fontsource-variable/inter'
 import '@fontsource-variable/fraunces'
 import '../src/index.css'
+
+/*
+ * A MSW nas stories: o loader do addon liga o worker uma vez e, a cada story, troca os
+ * handlers pelos de `parameters.msw`. O início é nosso, e não o padrão do addon: o padrão
+ * passa `onUnhandledRequest`, opção que a MSW 3 não tem mais, e a requisição sem handler
+ * seguiria para a internet. Aqui ela falha: nenhuma story chama a API real.
+ */
+async function iniciarMsw() {
+  const worker = setupWorker()
+  await worker.start({
+    quiet: true,
+    onUnhandledFrame({ frame, defaults }) {
+      // Os arquivos do próprio Storybook (mesma origem) passam sem handler
+      if (!(frame instanceof HttpNetworkFrame)) return
+      if (new URL(frame.data.request.url).origin === window.location.origin) return
+
+      defaults.error()
+      // Na MSW 3, o defaults.error() só escreve no console. Quem barra é a rejeição: o
+      // worker responde com Response.error(), e o fetch falha como numa queda de rede
+      throw Response.error()
+    },
+  })
+  return worker
+}
 
 /*
  * O fundo da página vem dos tokens (body com --surface). A faixa índigo precisa
@@ -36,6 +63,7 @@ const preview: Preview = {
     surface: 'surface',
   },
   decorators: [withSurface],
+  loaders: [mswLoader(iniciarMsw)],
   parameters: {
     // Com o addon de Vitest, cada story roda como teste no Chromium (npm test), e este
     // 'error' faz uma violação do axe reprovar o teste, e não só aparecer no painel
